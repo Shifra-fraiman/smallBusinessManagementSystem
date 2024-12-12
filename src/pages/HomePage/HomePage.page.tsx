@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ButtonComponent } from "../../components/Button/Button.component";
+import {ButtonComponent} from "../../components/Button/button.component";
 // import  AlertComponent  from "../../components/Alert/Alert.component";
 import { showAlert } from '../../utils/alertUtils';
 import { Alert, AlertTitle, Collapse } from "@mui/material";
@@ -9,7 +9,9 @@ export const Home = () => {
 
     return (
         <>
-            <h1>An effective small business management system</h1>
+        <div id="mainContainer">
+        <h1>An effective small business management system</h1>
+        <h2>מערכת אפקטיבית לניהול חכם של עסקים קטנים</h2>
             <div id="buttonsContainer">
                 <ButtonComponent text="הוסף מערכת לעסק שלך" onClick={() => {
                     showAlert("הודעת מערכת", "המערכת בפיתוח, אנא המתינו...", "info");
@@ -19,6 +21,8 @@ export const Home = () => {
                     showAlert("הודעת מערכת", "המערכת בפיתוח, אנא המתינו...", "info");
                 }}></ButtonComponent>
             </div>
+        </div>
+
         </>
     );
 }
