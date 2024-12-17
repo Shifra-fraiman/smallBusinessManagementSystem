@@ -1,42 +1,46 @@
-import React, {useState} from "react";
-// import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import {
     Button,
-    createTheme,
-    Divider,
     FormControl,
-    IconButton,
-    InputAdornment,
     InputLabel,
     OutlinedInput,
-    TextField,
-    ThemeProvider,
+    FormHelperText,
+    InputAdornment,
+    IconButton,
 } from "@mui/material";
-import {Password, Visibility} from "@mui/icons-material";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import './GenericForm.css'
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+
+const validationRules = {
+    text: (value) => value.trim().length >= 2 || 'שדה זה הינו חובה',
+    email: (value) => /\S+@\S+\.\S+/.test(value) || 'מייל לא תקין',
+    password: (value) => (value.length >= 6 && /[A-Z]/.test(value) && /[0-9]/.test(value)) || 'סיסמה חייבת להיות לפחות 6 תווים, עם אות גדולה ומספר',
+};
+
+export const GenericForm = ({fields, onSubmit, canSkipped}: { fields: any; onSubmit: any; canSkipped?: boolean }) => {
+    
+    const [formData, setFormData] = useState({});
+    const [errors, setErrors] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
 
 
-export const UserForm = ({onNext}) => {
-    const [showPassword, setShowPassword] = React.useState(false);
-   
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        Password: ''
-    });
+    useEffect(()=>{
+        for (const field of fields) {
+            const { name } = field;
+            setFormData({
+                ...formData,
+                name: ''
+            })
+            setErrors({
+                ...errors,
+                name: ''
+            })
+        }
+    },[])
 
-    const handleChange = (event) => {
-        event.preventDefault();
-        const { name, value } = event.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-       
-    };
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
+    //לסיסמה
+    const handleClickShowPassword = () => setShowPassword((show) => !show); 
+      
     //למנוע את המסגרת סביב אייקון העין
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -45,66 +49,110 @@ export const UserForm = ({onNext}) => {
     //     event.preventDefault();
     // };
 
-    const submitUserForm = (event) => {
-        event.preventDefault();
-        alert(`${formData.Password},${formData.email}, ${formData.name}`);
-        //שליחה לסרוויס 
-        onNext();
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        console.log("hello");
+        
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+        console.log(`formData[name]: ${formData[name]}, name: ${name}`);
+        
+        setErrors({
+            ...errors,
+            [name]: ''
+        });
     };
 
-    return ( 
-        <form className="form" dir="rtl" onSubmit={submitUserForm}>
-            <FormControl
-                sx={{m: 1, mb: 2, width: "50ch", textAlign: "right", dir: "rtl"}}
-                variant="outlined"
-                margin="normal"
+    const validateForm = () => {
+        let valid = true;
+        let newErrors = {};
+    
+        for (const field of fields) {
+            const {name, validation } = field; // כאן אנו מקבלים את השדות מהאובייקט Field
+            const value = formData[name] || '';
+            const validationResult = validationRules[validation](value);
+            if (validationResult !== true) {
+                newErrors[name] = validationResult; // משתמשים בשם כדי לשמור את השגיאה
+                valid = false;
+            }
+        }
+    
+        setErrors(newErrors);
+        return valid;
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (validateForm()) {
+            onSubmit(formData);
+        }
+    };
+    const handleSkip=(event)=>{
+        event.preventDefault();
+        //לדף הבא- מהו?
+        //לקבל גם כפרמטר
+    }
+
+    return (
+        <>
+        <form onSubmit={handleSubmit} dir="rtl">
+            {fields.map(({ name, label, type }) => (
+            <FormControl 
+                key={name} 
+                variant="outlined" 
+                margin="normal" 
                 fullWidth
+                sx={{ m: 1, mb: 2, width: "50ch", textAlign: "right", dir: "rtl" }}
             >
-                <InputLabel htmlFor="name">שם</InputLabel>
-                <OutlinedInput id="name" label="שם" name="name" onChange={handleChange}/>
-            </FormControl>
-            <FormControl
-                sx={{m: 1, mb: 2, width: "50ch", textAlign: "right"}}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-            >
-                <InputLabel htmlFor="email" >מייל</InputLabel>
-                <OutlinedInput id="email" label="מייל" type="email" name="email" onChange={handleChange} />
-            </FormControl>
-            <FormControl sx={{m: 1, mb: 2, width: "50ch"}} variant="outlined" margin="normal" fullWidth>
-                <InputLabel htmlFor="password">סיסמה</InputLabel>
+                <InputLabel htmlFor={name}>{label}</InputLabel>
                 <OutlinedInput
-                    id="outlined-adornment-password"
-                    type={showPassword ? "text" : "password"}
+                    id={name}
+                    label={name}
+                    name={name}
+                    type={type === 'password' && !showPassword ? 'password' : 'text'}
                     onChange={handleChange}
-                    name="password"
-                    endAdornment={
-                        <InputAdornment position="end"  >
-                            <IconButton
-                                aria-label={showPassword ? "hide the password" : "display the password"}
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                // onMouseUp={handleMouseUpPassword}
-                                edge="end"          
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Password"
+                    error={!!errors[name]}
+                    endAdornment={type === "password" && (
+                                                <InputAdornment position="end"  >
+                                                    <IconButton
+                                                        aria-label={showPassword ? "hide the password" : "display the password"}
+                                                        onClick={handleClickShowPassword}
+                                                        onMouseDown={handleMouseDownPassword}
+                                                        // onMouseUp={handleMouseUpPassword}
+                                                        edge="end"          
+                                                    >
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                )}
                 />
+                {errors[name] && <FormHelperText error>{errors[name]}</FormHelperText>}
             </FormControl>
-            <Button
-                sx={{m: 1, mb: 2, width: "25ch", color: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)", background: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)"}}
-                variant="contained"
-                color="primary"
+            ))}
+            <br></br>
+            <Button 
+                sx={{ m: 1, mb: 2, width: "25ch", color: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)", background: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)" }} 
+                variant="contained" 
+                color="primary" 
                 type="submit"
-                className="button"
-                onSubmit={submitUserForm}
             >
                 אשר
             </Button>
+            
         </form>
+        {canSkipped && <Button 
+            sx={{ m: 1, mb: 2, width: "25ch", color: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)", background: "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)" }} 
+            variant="contained" 
+            color="primary" 
+            type="submit"
+            onClick={handleSkip}
+        >
+            דלג
+        </Button>}
+        </>
     );
 };
+

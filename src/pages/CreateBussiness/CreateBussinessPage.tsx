@@ -7,6 +7,7 @@ import { CreateStepper } from "../../components/general/CreateStepper";
 import { BussinessForm } from "../../components/Forms/BusinessForm/BussinesForm";
 import { ServiceForm } from "../../components/Forms/ServiceForm/ServiceForm";
 import { ChooseDayInWeekAndTime } from "../../components/general/ChooseDayInWeekAndTime";
+import { GenericForm } from "../../components/Forms/genericForm/GenericForm";
 
 
 
@@ -24,6 +25,7 @@ const [currentForm, setCurrentForm]= useState(0);
         setCurrentForm(currentForm+1);
     }
 
+
     return (
         <>
         {/* <div className="slider">
@@ -38,7 +40,6 @@ const [currentForm, setCurrentForm]= useState(0);
     </Box>
             
         </div> */}
-      
         <CreateStepper key = {currentForm} value={currentForm}></CreateStepper>  
            
         {currentForm === 0 && <UserForm onNext={NextForm} />}
