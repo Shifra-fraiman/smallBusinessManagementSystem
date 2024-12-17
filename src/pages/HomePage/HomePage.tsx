@@ -1,9 +1,10 @@
 import React from "react";
+import { CreateBussinessPage } from "../CreateBussiness/CreateBussinessPage";
 
 export const Home = ()=>{
     return (
         <>
-        <h1>An effective small business management system</h1>
+        <CreateBussinessPage/>
         </>
     )
 }
