@@ -98,7 +98,7 @@ export const GenericForm = ({fields, onSubmit, canSkipped}: { fields: any; onSub
 
     return (
         <>
-        <form onSubmit={handleSubmit} dir="rtl">
+        <form onSubmit={handleSubmit} dir="rtl" className="form" >
             {fields.map(({ name, label, type }) => (
             <FormControl 
                 key={name} 
