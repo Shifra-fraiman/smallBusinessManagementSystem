@@ -1,5 +1,7 @@
 import Bussiness from "./Bussiness.model"
 
 export default interface Service {
-    id: string, businessId:Bussiness,name: string, serviceData: { schedule: string, description:[{title, content},{}]}
+    _id?: string, businessId:string,name: string,
+     serviceData?:any
+     // { schedule: string, description:[{title:string, content:string},{}]}
 }
