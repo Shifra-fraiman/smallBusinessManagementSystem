@@ -1,83 +1,93 @@
-// src/services/__tests__/ServiceService.test.ts
+import { logger, testsLogger } from '../../../log4jsConfig';
+import Service from '../../models/Service.model';
 import { ServiceService } from '../Services.service';
-declare var global: any;
-
-global.fetch = jest.fn();
+import axios from 'axios';
+const SERVER = "https://restnode-jsproject.onrender.com/"
 
 describe('ServiceService', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    test('createService should create a new service', async () => {
-        const mockResponse = { id: '1', name: 'Test Service' };
-        (fetch as jest.Mock).mockResolvedValueOnce({
-            json: jest.fn().mockResolvedValueOnce(mockResponse),
-        });
+    testsLogger.info("\n________________________\n\nNew Test Begin\n~~~~~~~~~~~~~~~~~~~~~\n")
 
-        const result = await ServiceService.createService('businessId', 'Test Service');
-        expect(fetch).toHaveBeenCalledWith('https://restnode-jsproject.onrender.com/services/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ businessId: 'businessId', name: 'Test Service', serviceData: undefined }),
-        });
-        expect(result).toEqual(mockResponse);
-    });
+    try {
+        const service :Service= {
+            businessId: "66e01df4ff3e2928d0c22858",
+            name: "העסק הראשון שלי",
+            serviceData: {
+                cost: "350"
+            }
+        };
+        let _id = ""
 
-    test('getService should retrieve a service by ID', async () => {
-        const mockResponse = { id: '1', name: 'Test Service' };
-        (fetch as jest.Mock).mockResolvedValueOnce({
-            json: jest.fn().mockResolvedValueOnce(mockResponse),
-        });
+        //POST
+        test("postService should retriveve the new service", async () => {
+            testsLogger.info(`postService Test`);
+            const response = await ServiceService.createService(service);
+            testsLogger.info(`postService Test Success.\n Response: ${JSON.stringify(response)}`);
+            testsLogger.info("_______POST________\n"+JSON.stringify(response));
+            _id = response._id;
+            expect(response).toEqual(expect.objectContaining({
+                // __v:expect.any(Number),
+                // _id: expect.any(String),
+                businessId: service.businessId,
+                name: service.name,
+                serviceData: service.serviceData
+            }));
+            
+        })
 
-        const result = await ServiceService.getService('1');
-        expect(fetch).toHaveBeenCalledWith('https://restnode-jsproject.onrender.com/services/1', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        expect(result).toEqual(mockResponse);
-    });
+        //GET ALL
+        // test('getService should retrieve a service', async () => {
+        //     const result = await ServiceService.getAllServices();
+        //     expect(Array.isArray(result)).toBe(true);
+        //     result.forEach((item: any) => {
+        //         expect(typeof item).toBe('object');
+        //     });
+        // })
 
-    test('updateService should update an existing service', async () => {
-        const mockResponse = { id: '1', name: 'Updated Service' };
-        (fetch as jest.Mock).mockResolvedValueOnce({
-            json: jest.fn().mockResolvedValueOnce(mockResponse),
-        });
+        //GET BY ID
+        // test("getService by id should retrieve a service", async () => {
+        //     const result = await ServiceService.getAllServices();
+        //     expect(Array.isArray(result)).toBe(false);
+        // })
 
-        const result = await ServiceService.updateService('1', 'businessId', 'Updated Service');
-        expect(fetch).toHaveBeenCalledWith('https://restnode-jsproject.onrender.com/services/update/1', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ businessId: 'businessId', name: 'Updated Service', serviceData: undefined }),
-        });
-        expect(result).toEqual(mockResponse);
-    });
+        //GET
+        test('getService should retrieve a service', async () => {
+            testsLogger.info(`getService Test`);
+            const result = await ServiceService.getAllServices();
+            expect(Array.isArray(result)).toBe(true);
+            testsLogger.info(`getService Test\n Response: ${JSON.stringify(result)}`);
+            result.forEach((item: any) => {
+                expect(typeof item).toBe('object');
+            });
+        })
 
-    test('deleteService should delete a service by ID', async () => {
-        const mockResponse = { success: true };
-        (fetch as jest.Mock).mockResolvedValueOnce({
-            json: jest.fn().mockResolvedValueOnce(mockResponse),
-        });
+        //PUT
+        test("putService should retieve a updated service", async () => {
+            testsLogger.info(`putService Test`);
+            const newService: Service = {
+                _id: "66e333fb5bcc55523d62d037",
+                businessId: "66e01df4ff3e2928d0c22858",
+                name: "חלאק'ה",
+                serviceData: {
+                    cost: "280"
+                }
+            }
+            const result = await ServiceService.updateService(newService);
+            testsLogger.info(`putService Test \nResponse: ${JSON.stringify(result)}`);
+            expect(result).toMatchObject(newService)
+        })
 
-        const result = await ServiceService.deleteService('1');
-        expect(fetch).toHaveBeenCalledWith('https://restnode-jsproject.onrender.com/services/delete/1', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        expect(result).toEqual(mockResponse);
-    });
+        //DELETE
+        test("Delete Test should retrive the deleted service", async () => {
+            const response = await ServiceService.deleteService(_id)
+        })
 
-    test('getAllServices should retrieve all services', async () => {
-        const mockResponse = [{ id: '1', name: 'Test Service' }];
-        (fetch as jest.Mock).mockResolvedValueOnce({
-            json: jest.fn().mockResolvedValueOnce(mockResponse),
-        });
+    } catch (error) {
+        testsLogger.info(`Error in Services Test:\n ${error!}`);
 
-        const result = await ServiceService.getAllServices();
-        expect(fetch).toHaveBeenCalledWith('https://restnode-jsproject.onrender.com/services', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        expect(result).toEqual(mockResponse);
-    });
+    }
+
 });

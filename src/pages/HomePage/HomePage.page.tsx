@@ -1,11 +1,11 @@
-import React, {useState} from "react";
-import {ButtonComponent} from "../../components/Button/button.component";
+import React, { useState } from "react";
+import { ButtonComponent } from "../../components/Button/button.component";
 // import  AlertComponent  from "../../components/Alert/Alert.component";
-import {showAlert} from "../../utils/alertUtils";
-import {Alert, AlertTitle, Collapse} from "@mui/material";
+import { showAlert } from "../../utils/alertUtils";
+import { Alert, AlertTitle, Collapse } from "@mui/material";
 import "./HomePage.page.css";
-import {Link, Router} from "react-router-dom";
-import {CreateBussinessPage} from "../CreateBussiness/CreateBussinessPage";
+import { Link, Router } from "react-router-dom";
+import { CreateBussinessPage } from "../CreateBussiness/CreateBussinessPage";
 
 export const Home = () => {
     return (
@@ -16,19 +16,20 @@ export const Home = () => {
                 <div id="buttonsContainer">
                     <Link to="/createBussiness">
                         <ButtonComponent
+                            onClick={() => {
+                            }}
                             text="הוסף מערכת לעסק שלך"
+                        ></ButtonComponent>
+                    </Link>
+
+                    <Link to="/about">
+                        <ButtonComponent
+                            text="הסבר על המערכת"
                             onClick={() => {
                                 // showAlert("הודעת מערכת", "המערכת בפיתוח, אנא המתינו...", "info");
                             }}
                         ></ButtonComponent>
                     </Link>
-
-                    <ButtonComponent
-                        text="הסבר על המערכת"
-                        onClick={() => {
-                            showAlert("הודעת מערכת", "המערכת בפיתוח, אנא המתינו...", "info");
-                        }}
-                    ></ButtonComponent>
                 </div>
             </div>
         </>
