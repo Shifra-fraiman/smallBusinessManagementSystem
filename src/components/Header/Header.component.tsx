@@ -12,8 +12,14 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import logo from '../../assets/logo.svg';
+import logo from '../../assets/logo.svg'
+import { Link } from 'react-router-dom';
 
+// const pageMap = {
+//   'הזמנות': 'orders',
+//   'מנהל': 'admin',
+//   'יצירת קשר': 'contact',
+// };
 const pages = ['הזמנות', 'מנהל', 'יצירת קשר'];
 const settings = ['יציאה'];
 
@@ -89,7 +95,9 @@ function ResponsiveAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  {/* <Link to={`/${pageMap[page]}`} style={{textDecoration: 'none', color: 'inherit'}}> */}
                   <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  {/* </Link> */}
                 </MenuItem>
               ))}
             </Menu>
