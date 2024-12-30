@@ -7,8 +7,9 @@ import { Home } from "./pages/HomePage/HomePage.page";
 import ResponsiveAppBar from "./components/Header/Header.component";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { CreateBussinessPage } from "./pages/CreateBussiness/CreateBussinessPage";
-import { AboutPage } from "./pages/About/AboutPage.page";
-
+import  {AboutPage}  from "./pages/About/AboutPage.page";
+import  ContactPage  from "./pages/Contact/ContactPage.page";
+import LoginPage from "./pages/Login/LoginPage.page"
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/createBussiness" element={<CreateBussinessPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
 
         </Routes>
       </Router>

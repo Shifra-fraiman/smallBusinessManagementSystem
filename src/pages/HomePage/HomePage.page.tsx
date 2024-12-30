@@ -16,6 +16,8 @@ export const Home = () => {
                 <div id="buttonsContainer">
                     <Link to="/createBussiness">
                         <ButtonComponent
+                            onClick={() => {
+                            }}
                             text="הוסף מערכת לעסק שלך"
                         ></ButtonComponent>
                     </Link>

@@ -13,14 +13,19 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import logo from '../../assets/logo.svg'
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 // const pageMap = {
 //   'הזמנות': 'orders',
 //   'מנהל': 'admin',
 //   'יצירת קשר': 'contact',
 // };
-const pages = ['הזמנות', 'מנהל', 'יצירת קשר'];
+
+const pages = [
+  { label: 'כניסה לעסק', path: "/login" },
+  { label: 'אודות', path: "/about" },
+  { label: 'יצירת קשר', path: "/contact" }
+];
 const settings = ['יציאה'];
 
 function ResponsiveAppBar() {
@@ -34,8 +39,11 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const navigate = useNavigate();
+
+  const handleCloseNavMenu = (myPath: string) => {
+    return () => { navigate(myPath);}
+    // navigate(myPath);
   };
 
   const handleCloseUserMenu = () => {
@@ -63,7 +71,9 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-             <img src={logo} alt="Logo" style={{ height: '80px', marginRight: '8px' }} />
+            <Link to={"/"}>
+            <img src={logo} alt="Logo" style={{ height: '80px', marginRight: '8px' }} />
+            </Link>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -94,9 +104,9 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                   {/* <Link to={`/${pageMap[page]}`} style={{textDecoration: 'none', color: 'inherit'}}> */}
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  <Typography sx={{ textAlign: 'center' }}>{page.label}</Typography>
                   {/* </Link> */}
                 </MenuItem>
               ))}
@@ -128,11 +138,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.label}
+                onClick={handleCloseNavMenu(page.path)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.label}
               </Button>
             ))}
           </Box>
